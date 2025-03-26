@@ -10,13 +10,34 @@ dotenv.config();
 const app = express();
 
 //middle ware definition (utilized for all requests)
-app.use(cors());
-app.use(express.json());
+app.use(cors()); // use cors
+app.use(express.json()); // use json
+// log incoming reuqest path
+app.use((req, res, next) => {
+  console.log(`Request received: ${req.method} ${req.originalUrl}`);
+  next(); // pass to next middleware/route
+});
+//log status of response
+app.use((req, res, next) => {
+  const start = Date.now();
 
-//route definition
+  // Listen for when the response is finished
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    console.log(
+      `[${new Date().toISOString()}] ${req.method} ${req.originalUrl} → ${res.statusCode} (${duration}ms)`
+    );
+  });
+
+  next();
+});
+
+
+
+//route mountin
 app.use('/auth', authRoutes);
 
-//ping route definition
+//ping route defininiton
 app.get('/ping', (req, res) => {
     res.send('pong');
 });
