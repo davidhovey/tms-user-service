@@ -1,0 +1,25 @@
+services:
+  tms-user-service:
+    build:
+      context: ./projects/tms-user-service
+      dockerfile: Dockerfile
+    image: tms-user-service
+    container_name: tms-user-service
+    environment:
+      NODE_ENV: development
+    env_file:
+      - ./projects/tms-user-service/.env
+    volumes:
+      - ./projects/tms-user-service:/app
+      - /app/node_modules
+    command: npm run dev  # ← assuming nodemon or similar
+    depends_on:
+      - db
+    ports:
+      - "4000:4000"
+    networks:
+      - tms-net
+
+networks:
+  tms-net:
+    external: true
