@@ -1,0 +1,22 @@
+services:
+  tms-user-service:
+    build:
+      context: ./projects/tms-user-service
+      dockerfile: Dockerfile
+    image: tms-user-service
+    container_name: tms-user-service-test
+    environment:
+      NODE_ENV: test
+    volumes:
+      - ./projects/tms-user-service:/app
+      - /app/node_modules
+    command: npm test
+    depends_on:
+      - db
+    networks:
+      - tms-net
+
+
+networks:
+  tms-net:
+    external: true
